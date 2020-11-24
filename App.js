@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import client from "./API.js";
 import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage'
 
 
 export default class App extends Component {
@@ -21,23 +21,31 @@ export default class App extends Component {
     this.setState({ password: event.target.value });
   }
 
+  getData = async ()=>{  
+    try{  
+      let user = await AsyncStorage.getItem('user'); 
+      console.log(JSON.parse(user).username); 
+    }  
+    catch(error){  
+      alert(error); 
+    }  
+  } 
+
   
   handleSubmit(event) {
-    const options = {
-      headers: {'X-Custom-Header': 'value'}
-    };
+    this.getData();
     event.preventDefault();
-    console.log(this.state);
     client
       .post("/auth/users/login/", {
         username: this.state.username,
         password: this.state.password,
-        options,
       })
       .then((res) => {
         console.log(res);
-        console.log(res.data);
-        window.localStorage.setItem("user", JSON.stringify(res.data));
+        AsyncStorage.setItem("user", JSON.stringify(res.data));
+        console.log('ovo je preuzeti:');
+        this.getData();
+        
       
       });
   }
