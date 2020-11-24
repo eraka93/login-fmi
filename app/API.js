@@ -14,12 +14,9 @@ client.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 client.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
-  if (error.response === 403) {
+  console.log(error.response);
+  if (error.response.status === 403) {
     AsyncStorage.removeItem("user");
-    if (error.response.data.detail === "Authentication credentials were not provided.") {
-      AsyncStorage.removeItem("user");
-    }
-
   }
   return Alert(error);
 });
